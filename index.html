@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UTM Campaign Link & Clean URL Slug Builder</title>
+  <!--
+    Project: UTM & Slug Builder (Single-File Open Source Tool)
+    Author: Saiful Islam
+    License: MIT
+    Description: Build clean UTM campaign URLs with quick presets and generate SEO-friendly URL slugs.
+  -->
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --radius: 10px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding: 24px 16px;
+    }
+    .container { max-width: 880px; margin: 0 auto; }
+    header { margin-bottom: 20px; }
+    h1 { margin: 0 0 6px; font-size: 1.5rem; }
+    p.subtitle { margin: 0; color: var(--muted); font-size: 0.95rem; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    }
+    .card h2 { margin: 0 0 14px; font-size: 1.15rem; }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
+    .full { grid-column: 1 / -1; }
+    label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+    label span { color: var(--muted); font-weight: 400; }
+    input[type="text"], input[type="url"] {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.92rem;
+    }
+    input:focus { outline: 2px solid var(--primary); border-color: transparent; }
+    .presets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .chip {
+      background: #eff6ff;
+      color: #1e40af;
+      border: 1px solid #bfdbfe;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+    .chip:hover { background: #dbeafe; }
+    .output-box {
+      margin-top: 16px;
+      background: #f1f5f9;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.88rem;
+      word-break: break-all;
+      min-height: 46px;
+    }
+    .actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    button {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 9px 16px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    button:hover { background: var(--primary-hover); }
+    button.secondary {
+      background: #fff;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    button.secondary:hover { background: #f1f5f9; }
+    .inline-opts {
+      display: flex;
+      gap: 16px;
+      margin-top: 10px;
+      font-size: 0.86rem;
+      color: var(--muted);
+      flex-wrap: wrap;
+    }
+    .inline-opts label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 400;
+      color: var(--text);
+      margin: 0;
+      cursor: pointer;
+    }
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #0f172a;
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      opacity: 0;
+      transition: opacity 0.2s;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>UTM Campaign Link & Clean URL Slug Builder</h1>
+      <p class="subtitle">Generate trackable marketing URLs and clean, SEO-ready slugs in one place.</p>
+    </header>
+
+    <!-- Section 1: UTM Builder -->
+    <div class="card">
+      <h2>1. Campaign UTM Link Builder</h2>
+      <div class="presets">
+        <span style="font-size:0.82rem; color:var(--muted); align-self:center;">Quick Presets:</span>
+        <button type="button" class="chip" onclick="applyPreset('facebook','paid_social')">Facebook Ads</button>
+        <button type="button" class="chip" onclick="applyPreset('google','cpc')">Google Search</button>
+        <button type="button" class="chip" onclick="applyPreset('newsletter','email')">Email Newsletter</button>
+        <button type="button" class="chip" onclick="applyPreset('whatsapp','social')">WhatsApp Share</button>
+      </div>
+
+      <div class="grid">
+        <div class="full">
+          <label for="baseUrl">Website URL <span>(required)</span></label>
+          <input type="url" id="baseUrl" placeholder="https://oitech.com.bd/offers" oninput="buildUTM()" />
+        </div>
+        <div>
+          <label for="utmSource">utm_source <span>(e.g. facebook, google)</span></label>
+          <input type="text" id="utmSource" placeholder="facebook" oninput="buildUTM()" />
+        </div>
+        <div>
+          <label for="utmMedium">utm_medium <span>(e.g. cpc, social, email)</span></label>
+          <input type="text" id="utmMedium" placeholder="paid_social" oninput="buildUTM()" />
+        </div>
+        <div>
+          <label for="utmCampaign">utm_campaign <span>(e.g. eid_sale_2026)</span></label>
+          <input type="text" id="utmCampaign" placeholder="eid_promo" oninput="buildUTM()" />
+        </div>
+        <div>
+          <label for="utmContent">utm_content <span>(optional, e.g. banner_a)</span></label>
+          <input type="text" id="utmContent" placeholder="hero_cta" oninput="buildUTM()" />
+        </div>
+        <div class="full">
+          <label for="utmTerm">utm_term <span>(optional, paid keywords)</span></label>
+          <input type="text" id="utmTerm" placeholder="web development dhaka" oninput="buildUTM()" />
+        </div>
+      </div>
+
+      <div class="inline-opts">
+        <label><input type="checkbox" id="lowercaseUtm" checked onchange="buildUTM()" /> Force lowercase & replace spaces with underscores</label>
+      </div>
+
+      <div class="output-box" id="utmOutput">Enter a valid website URL above to generate your UTM link...</div>
+
+      <div class="actions">
+        <button type="button" onclick="copyText('utmOutput', 'UTM URL copied!')">Copy Campaign URL</button>
+        <button type="button" class="secondary" onclick="resetUTM()">Reset</button>
+      </div>
+    </div>
+
+    <!-- Section 2: Clean URL Slug Generator -->
+    <div class="card">
+      <h2>2. Clean URL Slug Generator</h2>
+      <div>
+        <label for="slugTitle">Article, Product, or Page Title</label>
+        <input type="text" id="slugTitle" placeholder="e.g. Top 10 E-Commerce Payment Gateways in Bangladesh (2026)!" oninput="buildSlug()" />
+      </div>
+
+      <div class="inline-opts">
+        <label><input type="checkbox" id="removeStopWords" onchange="buildSlug()" /> Remove common English stop words (a, an, the, in, of, for, and)</label>
+        <label><input type="checkbox" id="useUnderscore" onchange="buildSlug()" /> Use underscores (_) instead of hyphens (-)</label>
+      </div>
+
+      <div class="output-box" id="slugOutput">your-clean-url-slug</div>
+
+      <div class="actions">
+        <button type="button" onclick="copyText('slugOutput', 'Slug copied!')">Copy Slug</button>
+        <button type="button" class="secondary" onclick="document.getElementById('slugTitle').value=''; buildSlug();">Clear</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">Copied!</div>
+
+  <script>
+    const STOP_WORDS = new Set(["a", "an", "the", "and", "or", "but", "in", "on", "at", "to", "for", "of", "with", "by", "is", "are"]);
+
+    function showToast(msg) {
+      const t = document.getElementById("toast");
+      t.textContent = msg;
+      t.classList.add("show");
+      setTimeout(() => t.classList.remove("show"), 1800);
+    }
+
+    function normalizeParam(val, forceClean) {
+      const trimmed = val.trim();
+      if (!forceClean) return trimmed;
+      return trimmed.toLowerCase().replace(/\s+/g, "_");
+    }
+
+    function applyPreset(source, medium) {
+      document.getElementById("utmSource").value = source;
+      document.getElementById("utmMedium").value = medium;
+      buildUTM();
+    }
+
+    function buildUTM() {
+      const rawUrl = document.getElementById("baseUrl").value.trim();
+      const out = document.getElementById("utmOutput");
+      if (!rawUrl) {
+        out.textContent = "Enter a valid website URL above to generate your UTM link...";
+        return;
+      }
+
+      let urlObj;
+      try {
+        urlObj = new URL(/^https?:\/\//i.test(rawUrl) ? rawUrl : "https://" + rawUrl);
+      } catch {
+        out.textContent = "Invalid URL format. Example: https://example.com/page";
+        return;
+      }
+
+      const forceClean = document.getElementById("lowercaseUtm").checked;
+      const params = [
+        ["utm_source", document.getElementById("utmSource").value],
+        ["utm_medium", document.getElementById("utmMedium").value],
+        ["utm_campaign", document.getElementById("utmCampaign").value],
+        ["utm_content", document.getElementById("utmContent").value],
+        ["utm_term", document.getElementById("utmTerm").value]
+      ];
+
+      params.forEach(([key, val]) => {
+        const cleanVal = normalizeParam(val, forceClean);
+        if (cleanVal) {
+          urlObj.searchParams.set(key, cleanVal);
+        } else {
+          urlObj.searchParams.delete(key);
+        }
+      });
+
+      out.textContent = urlObj.toString();
+    }
+
+    function resetUTM() {
+      ["baseUrl", "utmSource", "utmMedium", "utmCampaign", "utmContent", "utmTerm"].forEach(id => {
+        document.getElementById(id).value = "";
+      });
+      buildUTM();
+    }
+
+    function buildSlug() {
+      const title = document.getElementById("slugTitle").value;
+      const removeStop = document.getElementById("removeStopWords").checked;
+      const sep = document.getElementById("useUnderscore").checked ? "_" : "-";
+      const out = document.getElementById("slugOutput");
+
+      if (!title.trim()) {
+        out.textContent = "your-clean-url-slug";
+        return;
+      }
+
+      let words = title
+        .normalize("NFKD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, " ")
+        .trim()
+        .split(/[\s-_]+/)
+        .filter(Boolean);
+
+      if (removeStop && words.length > 2) {
+        words = words.filter(w => !STOP_WORDS.has(w));
+      }
+
+      out.textContent = words.join(sep) || "your-clean-url-slug";
+    }
+
+    function copyText(elementId, message) {
+      const text = document.getElementById(elementId).textContent;
+      if (!text || text.startsWith("Enter a valid") || text.startsWith("Invalid URL")) {
+        return showToast("Nothing valid to copy");
+      }
+      navigator.clipboard.writeText(text);
+      showToast(message);
+    }
+  </script>
+</body>
+</html>
