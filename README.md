@@ -1,38 +1,34 @@
-# Vhiper
+# Tracer
 
-A fast, lightweight, **single-file** web tool to validate, normalize, deduplicate, and detect mobile network operators for Bangladeshi phone numbers—with zero external dependencies.
+A clean, **single-file**, zero-dependency browser utility for marketers, content creators, and developers to generate trackable UTM campaign URLs and SEO-friendly URL slugs in seconds.
 
-> **Live Demo:** `https://<your-github-username>.github.io/bd-phone-helper/` *(Enable GitHub Pages in repository settings to activate)*
+**Live Demo:** `https://tracer-origin.vercel.app/`
 
 ## Features
 
-- **Bulk Validation & Parsing:** Paste hundreds of numbers separated by new lines, commas, or spaces.
-- **Format Normalization:** Automatically converts mixed inputs (`017...`, `88017...`, `+88017...`, or hyphenated numbers) into clean **Local (`01...`)** and **International (`+8801...`)** formats.
-- **Operator Detection:** Identifies all Bangladeshi mobile operators based on prefix:
-  - **Grameenphone:** `013`, `017`
-  - **Robi:** `018`
-  - **Airtel:** `016`
-  - **Banglalink:** `014`, `019`
-  - **Teletalk:** `015`
-- **Duplicate & Invalid Filtering:** Automatically separates duplicate entries and invalid numbers for easy cleanup.
-- **One-Click Copy & CSV Export:** Copy clean `01...` or `+8801...` lists directly to your clipboard or download a structured `.csv` file.
-- **100% Client-Side & Private:** Everything runs locally in your browser; no phone numbers are ever uploaded to any server.
+### 1. Campaign UTM Link Builder
+- **Full UTM Parameter Support:** Easily configure `utm_source`, `utm_medium`, `utm_campaign`, `utm_content`, and `utm_term`.
+- **One-Click Channel Presets:** Quick-fill templates for **Facebook Ads**, **Google Search (CPC)**, **Email Newsletters**, and **WhatsApp Shares**.
+- **Auto-Sanitization:** Optional toggle to force lowercase and convert spaces to underscores (`_`) for clean analytics tracking.
+- **Real-Time Preview & Copy:** Instant valid URL generation with one-click clipboard copy.
+
+### 2. Clean URL Slug Generator
+- **Instant Slug Formatting:** Converts article titles, product names, or headings into lowercase, hyphenated (`-`) or underscored (`_`) slugs.
+- **Smart Cleanup:** Strips special characters, accents, and extra spaces automatically.
+- **Stop-Word Removal:** Optional filter to remove common English stop words (`a`, `an`, `the`, `in`, `of`, `for`, `and`) for shorter, higher-impact SEO slugs.
+
+### Privacy First
+- **100% Offline & Client-Side:** Runs completely in your browser without tracking, cookies, or external API calls.
 
 ## Quick Start
 
-1. Download `index.html` (or `bd-phone-helper.html`).
-2. Double-click the file to open it in any modern web browser.
-3. Paste your phone number list and click **Process Numbers**.
-
-## Use Cases
-
-- Cleaning SMS marketing or customer contact lists before bulk campaigns.
-- Verifying user-submitted phone numbers from e-commerce orders or forms.
-- Standardizing phone columns for CRM, Excel, or database imports.
+1. Download `index.html`.
+2. Open it directly in Chrome, Firefox, Edge, or Safari.
+3. Enter your destination URL or page title and copy the generated output.
 
 ## Contributing
 
-Contributions are welcome! Feel free to open an issue or submit a pull request to improve operator rules, UI, or export options—while keeping the project self-contained in a single HTML file.
+Want to add new presets, QR code generation, or batch slug processing? Fork the repo and submit a pull request—just keep everything inside a single HTML file.
 
 ## License
 
