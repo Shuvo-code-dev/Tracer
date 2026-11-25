@@ -2,8 +2,6 @@
 
 A clean, **single-file**, zero-dependency browser utility for marketers, content creators, and developers to generate trackable UTM campaign URLs and SEO-friendly URL slugs in seconds.
 
-**Live Demo:** `https://tracer-origin.vercel.app/`
-
 ## Features
 
 ### 1. Campaign UTM Link Builder
